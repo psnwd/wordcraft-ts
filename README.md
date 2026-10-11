@@ -44,7 +44,7 @@ Every example is a small page with Open, an export-format picker, Export and an 
 | Vue 3 + Vite | [`examples/vue`](examples/vue) | `bun run dev` |
 | Svelte 5 + Vite | [`examples/svelte`](examples/svelte) | `bun run dev` |
 | Astro (plain script, no UI framework) | [`examples/astro`](examples/astro) | `bun run dev` |
-| Python backend (generate and read tables) | [`examples/python`](examples/python) | see below |
+| Python backend (generate and read tables) | [`examples/automation/python`](examples/automation/python) | see below |
 
 One-time setup from the repo root (builds the package, then links it so the examples can import it):
 
@@ -96,7 +96,7 @@ useEffect(() => {
 
 ### Python: generate documents, read them back
 
-[`examples/python`](examples/python) pairs the editor with a small Python server (stdlib + `python-docx`):
+[`examples/automation/python`](examples/automation/python) pairs the editor with a small Python server (stdlib + `python-docx`):
 
 1. Paste JSON rows. Python builds a `.docx` whose table columns come from the data, with right-aligned numbers and
    an optional totals row. The editor opens it with `editor.load(bytes)`.
@@ -107,7 +107,7 @@ useEffect(() => {
 ![Python-generated order table open in the editor, with the parsed tables on the right](docs/python.png)
 
 ```sh
-cd examples/python
+cd examples/automation/python
 bun install
 python -m venv .venv && .venv/Scripts/pip install -r requirements.txt   # Linux/macOS: .venv/bin/pip
 python test_server.py             # self-check
