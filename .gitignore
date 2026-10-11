@@ -5,3 +5,5 @@ src/wasm
 .next
 *.tsbuildinfo
 next-env.d.ts
+dist
+.astro

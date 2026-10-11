@@ -1,0 +1,64 @@
+---
+import "../styles.css";
+const formats = ["docx", "odt", "rtf", "html", "md", "txt"];
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>WordCraft · Astro</title>
+  </head>
+  <body>
+    <div class="app">
+      <div class="bar">
+        <span class="brand">WordCraft · Astro</span>
+        <button id="open">Open…</button>
+        <input id="file" type="file" hidden accept=".docx,.odt,.rtf,.md,.txt,.html" />
+        <span class="spacer"></span>
+        <span class="status"><i id="dot" class="dot" hidden></i><span id="status">loading…</span></span>
+        <select id="format">
+          {formats.map((f) => <option value={f}>.{f}</option>)}
+        </select>
+        <button id="export" class="primary" disabled>Export</button>
+      </div>
+      <div class="stage"><canvas id="canvas"></canvas></div>
+    </div>
+
+    <!-- Plain browser script: no framework needed. Astro bundles it with Vite. -->
+    <script>
+      import { mountEditor } from "wordcraft-ts";
+
+      const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+      const status = $("status");
+      const dot = $("dot");
+      const exportBtn = $<HTMLButtonElement>("export");
+
+      mountEditor($<HTMLCanvasElement>("canvas"), { sample: true })
+        .then((editor) => {
+          status.textContent = "ready";
+          exportBtn.disabled = false;
+          editor.onDirty((dirty) => {
+            dot.hidden = !dirty;
+            status.textContent = dirty ? "ready · unsaved" : "ready";
+          });
+
+          $("open").onclick = () => $("file").click();
+          $<HTMLInputElement>("file").onchange = (e) => {
+            const input = e.currentTarget as HTMLInputElement;
+            const f = input.files?.[0];
+            if (f) editor.load(f);
+            input.value = "";
+          };
+          exportBtn.onclick = async () => {
+            const format = $<HTMLSelectElement>("format").value;
+            const blob = await editor.exportBlob(format);
+            const a = Object.assign(document.createElement("a"), { href: URL.createObjectURL(blob), download: `document.${format}` });
+            a.click();
+            URL.revokeObjectURL(a.href);
+          };
+        })
+        .catch((e) => (status.textContent = `failed: ${e}`));
+    </script>
+  </body>
+</html>

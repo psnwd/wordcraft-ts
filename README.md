@@ -33,18 +33,43 @@ editor.destroy();                         // stop the editor and free its canvas
 
 Any number of editors can share a page, one per canvas. Give each canvas a size with CSS; it resizes itself.
 
-## Next.js example
+## Examples
 
-[`examples/nextjs`](examples/nextjs) is a small multi-document workspace: a sidebar and tab bar, one editor per
+Every example is a small page with Open, an export-format picker, Export and an unsaved-changes indicator.
+
+| Framework | Folder | Run |
+|---|---|---|
+| Next.js (multi-document workspace) | [`examples/nextjs`](examples/nextjs) | `bun run dev` |
+| React + Vite | [`examples/react`](examples/react) | `bun run dev` |
+| Vue 3 + Vite | [`examples/vue`](examples/vue) | `bun run dev` |
+| Svelte 5 + Vite | [`examples/svelte`](examples/svelte) | `bun run dev` |
+| Astro (plain script, no UI framework) | [`examples/astro`](examples/astro) | `bun run dev` |
+
+One-time setup from the repo root (builds the package, then links it so the examples can import it):
+
+```sh
+bun install
+bun run build     # Rust -> wasm -> dist (see "Build from source")
+bun link
+```
+
+Then, for any example:
+
+```sh
+cd examples/react      # or vue, svelte, astro, nextjs
+bun install
+bun run dev
+```
+
+On Vite and Astro, add `optimizeDeps: { exclude: ["wordcraft-ts"] }` to the config (every example does), so the
+`.wasm` URL inside the package keeps resolving.
+
+### Next.js: multiple documents
+
+[`examples/nextjs`](examples/nextjs) is a multi-document workspace: a sidebar and tab bar, one editor per
 document, New / Open / Export, and unsaved-change markers.
 
 ![Two documents open in tabs, with an unsaved-changes dot on the second](docs/tabs.png)
-
-```sh
-cd examples/nextjs
-bun install
-bun run dev        # http://localhost:3000
-```
 
 The pattern that matters, from [`DocPane.tsx`](examples/nextjs/app/DocPane.tsx):
 
