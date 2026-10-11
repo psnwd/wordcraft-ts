@@ -19,11 +19,13 @@
   "scripts": {
     "build:wasm": "bun scripts/build-wasm.ts",
     "build": "bun run build:wasm && bun scripts/build-js.ts",
-    "demo": "bun scripts/demo.ts"
+    "demo": "bun scripts/demo.ts",
+    "logo:export": "bun logos/scripts/export.ts"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@types/bun": "latest",
-    "typescript": "^5",
-    "binaryen": "^123.0.0"
+    "binaryen": "^132.0.0",
+    "typescript": "^7.0.2"
   }
 }

@@ -1,6 +1,11 @@
-# wordcraft-ts
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="logos/export/logo-dark.svg">
+    <img alt="wordcraft-ts" src="logos/export/logo.svg" width="420">
+  </picture>
+</p>
 
-A full Word-style editor you can drop into any website, from TypeScript.
+<p align="center"><b>A full Word-style editor you can drop into any website, from TypeScript.</b></p>
 
 [WordCraft](https://github.com/storytold/wordcraft) is an open-source word processor written in Rust. This
 package compiles it to WebAssembly and wraps it in a small typed API: open `.docx`, edit with the ribbon,
@@ -169,4 +174,4 @@ build script copies it into the upstream workspace.
 
 ## License
 
-Same as WordCraft: MIT OR Apache-2.0.
+Same as WordCraft: MIT OR Apache-2.0. The logo is documented in [`logos/`](logos) (wordmark set in Inter, SIL OFL 1.1).

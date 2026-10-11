@@ -7,3 +7,4 @@ src/wasm
 next-env.d.ts
 dist
 .astro
+__pycache__
