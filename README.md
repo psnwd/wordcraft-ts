@@ -4,10 +4,13 @@ A full Word-style editor you can drop into any website, from TypeScript.
 
 [WordCraft](https://github.com/storytold/wordcraft) is an open-source word processor written in Rust. This
 package compiles it to WebAssembly and wraps it in a small typed API: open `.docx`, edit with the ribbon,
-styles, tables and track changes, then export `.docx`, `.odt`, `.rtf`, `.html`, `.md` or `.txt`. Nothing is
-sent to a server.
+styles, tables and track changes, then export `.docx`, `.odt`, `.rtf`, `.html`, `.md` or `.txt`. The editor runs
+entirely in the browser; it sends nothing anywhere unless your code does (see the automation examples).
 
 ![Workspace with the sample document open](docs/workspace.png)
+
+> Not published to npm yet. Build it from this repo (see [Build from source](#build-from-source)) and link it, as the
+> examples do.
 
 ## Use it
 
@@ -35,39 +38,40 @@ Any number of editors can share a page, one per canvas. Give each canvas a size 
 
 ## Examples
 
-Every example is a small page with Open, an export-format picker, Export and an unsaved-changes indicator.
+### Run an example
 
-| Framework | Folder | Run |
-|---|---|---|
-| Next.js (multi-document workspace) | [`examples/nextjs`](examples/nextjs) | `bun run dev` |
-| React + Vite | [`examples/react`](examples/react) | `bun run dev` |
-| Vue 3 + Vite | [`examples/vue`](examples/vue) | `bun run dev` |
-| Svelte 5 + Vite | [`examples/svelte`](examples/svelte) | `bun run dev` |
-| Astro (plain script, no UI framework) | [`examples/astro`](examples/astro) | `bun run dev` |
-| Python backend (generate and read tables) | [`examples/automation/python`](examples/automation/python) | see below |
-| TypeScript backend: Next.js route handlers (same flow) | [`examples/automation/nextjs-ts`](examples/automation/nextjs-ts) | `bun run dev` |
-| Next.js frontend + Python backend | [`examples/automation/nextjs-python`](examples/automation/nextjs-python) | `bun run dev` |
-
-One-time setup from the repo root (builds the package, then links it so the examples can import it):
+One-time setup from the repo root builds the package and links it so the examples can import it:
 
 ```sh
 bun install
-bun run build     # Rust -> wasm -> dist (see "Build from source")
+bun run build     # Rust -> wasm -> dist (needs the toolchain in "Build from source")
 bun link
 ```
 
 Then, for any example:
 
 ```sh
-cd examples/react      # or vue, svelte, astro, nextjs
+cd examples/react      # any folder from the tables below
 bun install
 bun run dev
 ```
 
-On Vite and Astro, add `optimizeDeps: { exclude: ["wordcraft-ts"] }` to the config (every example does), so the
-`.wasm` URL inside the package keeps resolving.
+### Framework examples
 
-### Next.js: multiple documents
+Each is a small page with Open, an export-format picker, Export and an unsaved-changes indicator.
+
+| Framework | Folder |
+|---|---|
+| Next.js (multi-document workspace) | [`examples/nextjs`](examples/nextjs) |
+| React + Vite | [`examples/react`](examples/react) |
+| Vue 3 + Vite | [`examples/vue`](examples/vue) |
+| Svelte 5 + Vite | [`examples/svelte`](examples/svelte) |
+| Astro (plain script, no UI framework) | [`examples/astro`](examples/astro) |
+
+On Vite and Astro, add `optimizeDeps: { exclude: ["wordcraft-ts"] }` to the config (every example does), so the
+`.wasm` URL inside the package keeps resolving. On Next.js, add `transpilePackages: ["wordcraft-ts"]`.
+
+#### Next.js: multiple documents
 
 [`examples/nextjs`](examples/nextjs) is a multi-document workspace: a sidebar and tab bar, one editor per
 document, New / Open / Export, and unsaved-change markers.
@@ -94,41 +98,45 @@ useEffect(() => {
   from a client component.
 - Keep background tabs mounted and hide them with `visibility: hidden` (not `display: none`), so each editor keeps
   its size and state.
-- Add `transpilePackages: ["wordcraft-ts"]` to `next.config.mjs`.
 
-### Python: generate documents, read them back
+### Automation examples
 
-[`examples/automation/python`](examples/automation/python) pairs the editor with a small Python server (stdlib + `python-docx`):
+A program, not only a person, creates and reads the documents. All three do the same thing:
 
-1. Paste JSON rows. Python builds a `.docx` whose table columns come from the data, with right-aligned numbers and
-   an optional totals row. The editor opens it with `editor.load(bytes)`.
+1. Paste JSON rows. The backend builds a `.docx` whose table columns come from the data (an extra key adds a column),
+   with right-aligned numbers, a shaded header and an optional totals row. The editor opens it with `editor.load(bytes)`.
 2. Edit the document in the browser.
-3. "Analyze" sends `editor.export("docx")` back to Python, which returns every table, the headings and a word
+3. "Analyze" sends `editor.export("docx")` back to the backend, which returns every table, the headings and a word
    count as JSON.
+
+| Example | Frontend | Backend | Start it |
+|---|---|---|---|
+| [`automation/python`](examples/automation/python) | Vite (vanilla TS) | Python, `python-docx`, stdlib HTTP server | two terminals (below) |
+| [`automation/nextjs-ts`](examples/automation/nextjs-ts) | Next.js | TypeScript route handlers: `docx`, `fflate`, `fast-xml-parser` | `bun run dev` |
+| [`automation/nextjs-python`](examples/automation/nextjs-python) | Next.js | The same Python server, behind Next `rewrites` | `bun run dev` (starts both) |
 
 ![Python-generated order table open in the editor, with the parsed tables on the right](docs/python.png)
 
+**Python** (`automation/python` and `automation/nextjs-python`) needs a virtualenv inside the example folder first:
+
 ```sh
-cd examples/automation/python
-bun install
-python -m venv .venv && .venv/Scripts/pip install -r requirements.txt   # Linux/macOS: .venv/bin/pip
-python test_server.py             # self-check
-bun run server                    # terminal 1: Python API on :8000 (Linux/macOS: .venv/bin/python server.py)
-bun run dev                       # terminal 2: the page, proxying /api to Python
+python -m venv .venv
+.venv/Scripts/pip install -r requirements.txt      # Linux/macOS: .venv/bin/pip
+python test_server.py                              # self-check (use .venv/Scripts/python or .venv/bin/python)
 ```
 
-The server binds to `127.0.0.1` and has no authentication; it is a demo, not something to expose.
+- `automation/python`: run `bun run server` (Python API on :8000) in one terminal and `bun run dev` (the page; Vite
+  proxies `/api` to Python) in another.
+- `automation/nextjs-python`: `bun run dev` starts Python and Next together. Next forwards `/api/*` to
+  `http://127.0.0.1:8000`; change it with `PYTHON_API`. The browser only ever talks to one origin, so there is no CORS.
 
-The same flow in TypeScript lives in [`examples/automation/nextjs-ts`](examples/automation/nextjs-ts). Next.js
-route handlers (`app/api/generate`, `app/api/analyze`) build the document with the `docx` package and read tables back
-with `fflate` and `fast-xml-parser`, so one `bun run dev` is all it needs. `bun run test` runs its self-check.
+**TypeScript** (`automation/nextjs-ts`) has no second server: the route handlers in `app/api/generate` and
+`app/api/analyze` do the work, and `bun run test` runs its self-check.
 
 ![TypeScript automation example: a table generated by a Next.js route handler, opened in the editor](docs/nextjs-ts.png)
 
-[`examples/automation/nextjs-python`](examples/automation/nextjs-python) combines the two: a Next.js page with the
-Python server behind it. `next.config.mjs` rewrites `/api/*` to `http://127.0.0.1:8000` (change it with
-`PYTHON_API`), so the browser only talks to one origin. After creating the virtualenv as above (inside that folder),
-`bun run dev` starts Python and Next together.
+The backends are demos: they bind to `127.0.0.1`, have no authentication, and accept up to 20 MB. Add auth and limits
+before exposing anything like them.
 
 ## Things to know
 
@@ -141,12 +149,12 @@ Python server behind it. `next.config.mjs` rewrites `/api/*` to `http://127.0.0.
 
 ## Build from source
 
-You need Rust, the upstream repo cloned next to this one (`../wordcraft-src`, or set `WORDCRAFT_SRC`), and:
+You need Rust, Bun, and the upstream repo cloned next to this one (`../wordcraft-src`, or set `WORDCRAFT_SRC`):
 
 ```sh
+git clone https://github.com/storytold/wordcraft ../wordcraft-src
 rustup target add wasm32-unknown-unknown
 cargo install wasm-bindgen-cli --version 0.2.129 --locked   # must match upstream's Cargo.lock
-git clone https://github.com/storytold/wordcraft ../wordcraft-src
 ```
 
 ```sh
