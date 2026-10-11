@@ -1,0 +1,7 @@
+node_modules
+dist
+src/wasm
+*.log
+.next
+*.tsbuildinfo
+next-env.d.ts

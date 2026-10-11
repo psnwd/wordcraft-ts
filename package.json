@@ -1,0 +1,20 @@
+{
+  "name": "wordcraft-ts",
+  "version": "0.5.0",
+  "description": "WordCraft (Word-style editor, Rust/WASM) as an embeddable browser editor",
+  "type": "module",
+  "license": "MIT OR Apache-2.0",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "types": "./dist/index.d.ts", "default": "./dist/index.js" },
+    "./wasm": "./dist/wasm/wordcraft_embed_bg.wasm"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build:wasm": "bun scripts/build-wasm.ts",
+    "build": "bun run build:wasm && bun scripts/build-js.ts",
+    "demo": "bun scripts/demo.ts"
+  },
+  "devDependencies": { "@types/bun": "latest", "typescript": "^5", "binaryen": "^123.0.0" }
+}
