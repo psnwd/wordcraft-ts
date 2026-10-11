@@ -2,12 +2,26 @@ import { mountEditor } from "wordcraft-ts";
 
 const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const status = $("status");
-const data = $<HTMLTextAreaElement>("data");
-const out = $("out");
-const generateBtn = $<HTMLButtonElement>("generate");
+const result = $("result");
 const analyzeBtn = $<HTMLButtonElement>("analyze");
+const makeSampleBtn = $<HTMLButtonElement>("make-sample");
+const tableForm = $<HTMLFormElement>("table-form");
+const reportForm = $<HTMLFormElement>("report-form");
+const generateButtons = [$<HTMLButtonElement>("generate-table"), $<HTMLButtonElement>("generate-report")];
 
-data.value = JSON.stringify(
+interface Analysis {
+  words: number;
+  headings: string[];
+  tables: string[][][]; // cell contents
+  outline: { level: number; text: string }[];
+  pictures: number;
+  table_shapes: { rows: number; cols: number }[];
+  sections: { orientation: string }[];
+  lists: { bullets: number; numbered: number };
+  footer_has_page_numbers: boolean;
+}
+
+$<HTMLTextAreaElement>("data").value = JSON.stringify(
   [
     { item: "Letterpress paper", qty: 12, price: 4.5 },
     { item: "Linocut ink", qty: 3, price: 12.0 },
@@ -17,47 +31,189 @@ data.value = JSON.stringify(
   2,
 );
 
-function show(text: string, isError = false) {
-  out.textContent = text;
-  out.className = isError ? "err" : "";
+function showError(message: string) {
+  result.className = "err";
+  result.textContent = message;
+}
+
+/** Python's analysis as chips, an indented outline and the table contents (textContent only: data is untrusted). */
+function showAnalysis(a: Analysis) {
+  result.className = "";
+  result.replaceChildren();
+  const chips = document.createElement("div");
+  chips.className = "chips";
+  const facts = [
+    `${a.words.toLocaleString()} words`,
+    `${a.tables.length} table${a.tables.length === 1 ? "" : "s"} (largest ${Math.max(0, ...a.table_shapes.map((t) => t.rows))} rows)`,
+    `${a.pictures} picture${a.pictures === 1 ? "" : "s"}`,
+    `${a.sections.length} section${a.sections.length === 1 ? "" : "s"}: ${a.sections.map((s) => s.orientation).join(" → ")}`,
+    `${a.lists.bullets} bullets, ${a.lists.numbered} numbered`,
+    a.footer_has_page_numbers ? "page numbers ✓" : "no page numbers",
+  ];
+  for (const f of facts) {
+    const chip = document.createElement("span");
+    chip.className = "chip";
+    chip.textContent = f;
+    chips.append(chip);
+  }
+  const outline = document.createElement("ul");
+  outline.className = "outline";
+  for (const h of a.outline) {
+    const li = document.createElement("li");
+    li.className = `l${Math.min(h.level, 3)}`;
+    li.textContent = h.text;
+    outline.append(li);
+  }
+  const details = document.createElement("details");
+  const summary = document.createElement("summary");
+  summary.textContent = "Table contents (JSON)";
+  const pre = document.createElement("pre");
+  pre.textContent = JSON.stringify(a.tables, null, 1);
+  details.append(summary, pre);
+  result.append(chips, outline, details);
 }
 
 /** Call the Python server; throw its {"error"} message on failure. */
 async function py(path: string, body: BodyInit, headers?: HeadersInit): Promise<Response> {
   const res = await fetch(path, { method: "POST", body, headers });
-  if (!res.ok) {
-    const msg = await res.json().then((j) => j.error, () => res.statusText);
-    throw new Error(msg);
-  }
+  if (!res.ok) throw new Error(await res.json().then((j) => j.error, () => res.statusText));
   return res;
 }
 
 const editor = await mountEditor($<HTMLCanvasElement>("canvas"), { sample: false });
 status.textContent = "ready";
-generateBtn.disabled = analyzeBtn.disabled = false;
+generateButtons.forEach((b) => (b.disabled = false));
+makeSampleBtn.disabled = false;
+analyzeBtn.disabled = false;
 editor.onDirty((d) => (status.textContent = d ? "ready · unsaved" : "ready"));
 
-generateBtn.onclick = async () => {
+/** POST a JSON string, open the .docx that comes back in the editor. */
+async function generateRaw(path: string, json: string, button: HTMLButtonElement, what: string) {
+  button.disabled = true;
+  result.className = "";
+  result.textContent = "Building in Python…";
   try {
-    const rows = JSON.parse(data.value);
+    const t0 = performance.now();
+    const res = await py(path, json, { "Content-Type": "application/json" });
+    const bytes = new Uint8Array(await res.arrayBuffer());
+    await editor.load(bytes, "document.docx");
+    result.textContent = `${what}: ${(bytes.length / 1024).toFixed(0)} KB built in ${((performance.now() - t0) / 1000).toFixed(1)} s and opened in the editor.`;
+  } catch (e) {
+    showError(String(e));
+  } finally {
+    button.disabled = false;
+  }
+}
+const generate = (path: string, params: unknown, button: HTMLButtonElement, what: string) => generateRaw(path, JSON.stringify(params), button, what);
+
+tableForm.onsubmit = (e) => {
+  e.preventDefault();
+  let rows: unknown;
+  try {
+    rows = JSON.parse($<HTMLTextAreaElement>("data").value);
+  } catch (err) {
+    return showError(String(err));
+  }
+  void generate("/api/generate", { title: "Order report", intro: "Generated by Python from JSON.", rows, totals: $<HTMLInputElement>("totals").checked }, generateButtons[0], "Table");
+};
+
+// ---- report mode: parameters -> sample JSON -> (edit / load a big file) -> build ------------------------
+
+const specBox = $<HTMLTextAreaElement>("spec");
+const specInfo = $("spec-info");
+const PREVIEW_CHARS = 200_000; // a textarea chokes on megabytes: past this the full JSON is kept in memory
+let specText = ""; // the JSON that gets sent, whatever the textarea shows
+let specBig = false;
+
+function setSpec(text: string) {
+  specText = text;
+  specBig = text.length > PREVIEW_CHARS;
+  specBox.value = specBig ? `${text.slice(0, 4000)}
+… (${(text.length / 1024 / 1024).toFixed(1)} MB loaded; preview only)` : text;
+  specBox.readOnly = specBig;
+  if (!text) {
+    specInfo.textContent = "";
+    return;
+  }
+  let info = `${(text.length / 1024).toFixed(0)} KB`;
+  try {
+    const n = (JSON.parse(text).blocks ?? []).length;
+    info += `, ${n} blocks`;
+  } catch {
+    info += " (not valid JSON yet)";
+  }
+  specInfo.textContent = specBig ? `${info} · preview only` : info;
+}
+specBox.oninput = () => {
+  if (!specBig) setSpec(specBox.value);
+};
+
+makeSampleBtn.onclick = async () => {
+  makeSampleBtn.disabled = true;
+  result.className = "";
+  result.textContent = "Creating sample JSON in Python…";
+  try {
+    const f = new FormData(reportForm);
     const res = await py(
-      "/api/generate",
-      JSON.stringify({ title: "Order report", intro: "Generated by Python from JSON.", rows, totals: $<HTMLInputElement>("totals").checked }),
+      "/api/sample",
+      JSON.stringify({
+        company: f.get("company"),
+        year: Number(f.get("year")),
+        seed: Number(f.get("seed")),
+        regions: Number(f.get("regions")),
+        appendix_rows: Number(f.get("appendix_rows")),
+        charts: f.get("charts") === "on",
+      }),
       { "Content-Type": "application/json" },
     );
-    await editor.load(new Uint8Array(await res.arrayBuffer()), "report.docx");
-    show("Document generated by Python and opened in the editor.");
+    setSpec(JSON.stringify(await res.json()));
+    result.textContent = "Sample JSON created. Edit it if you like, then build the report.";
   } catch (e) {
-    show(String(e), true);
+    showError(String(e));
+  } finally {
+    makeSampleBtn.disabled = false;
   }
+};
+
+const jsonFile = $<HTMLInputElement>("json-file");
+$("load-json").onclick = () => jsonFile.click();
+$("clear-json").onclick = () => setSpec("");
+jsonFile.onchange = async () => {
+  const file = jsonFile.files?.[0];
+  if (file) setSpec(await file.text());
+  jsonFile.value = "";
+};
+
+reportForm.onsubmit = (e) => {
+  e.preventDefault();
+  if (!specText.trim()) return showError("Create a sample or load a JSON file first.");
+  try {
+    JSON.parse(specText);
+  } catch (err) {
+    return showError(`The JSON is not valid: ${err}`);
+  }
+  // send the string as is: no parse + stringify round trip for a big document
+  void generateRaw("/api/report", specText, generateButtons[1], "Report");
 };
 
 analyzeBtn.onclick = async () => {
   try {
-    const bytes = await editor.export("docx");
-    const res = await py("/api/analyze", bytes as BodyInit);
-    show(JSON.stringify(await res.json(), null, 2));
+    const res = await py("/api/analyze", (await editor.export("docx")) as BodyInit);
+    showAnalysis(await res.json());
   } catch (e) {
-    show(String(e), true);
+    showError(String(e));
   }
 };
+
+// mode switch
+for (const [tab, form, other] of [
+  ["tab-table", tableForm, "tab-report"],
+  ["tab-report", reportForm, "tab-table"],
+] as const) {
+  $(tab).onclick = () => {
+    tableForm.hidden = reportForm.hidden = true;
+    form.hidden = false;
+    $(tab).setAttribute("aria-pressed", "true");
+    $(other).setAttribute("aria-pressed", "false");
+  };
+}

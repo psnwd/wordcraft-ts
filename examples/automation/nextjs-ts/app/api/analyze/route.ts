@@ -2,7 +2,7 @@ import { analyzeDocx } from "@/lib/docx";
 
 export const runtime = "nodejs";
 
-const MAX_BODY = 20 * 1024 * 1024; // 20 MB
+const MAX_BODY = 64 * 1024 * 1024; // 64 MB
 
 /** POST .docx bytes -> JSON (tables, headings, word count) */
 export async function POST(req: Request) {

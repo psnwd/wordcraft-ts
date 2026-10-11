@@ -1,8 +1,14 @@
 {
   "name": "wordcraft-automation-nextjs-example",
   "private": true,
-  "scripts": { "dev": "next dev", "build": "next build", "start": "next start", "test": "bun lib/docx.test.ts" },
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "bun lib/docx.test.ts && bun lib/report.test.ts"
+  },
   "dependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "docx": "^9",
     "fast-xml-parser": "^5",
     "fflate": "^0.8",
@@ -11,5 +17,10 @@
     "react-dom": "^19.0.0",
     "wordcraft-ts": "link:wordcraft-ts"
   },
-  "devDependencies": { "@types/bun": "latest", "@types/node": "^22", "@types/react": "^19", "typescript": "^5" }
+  "devDependencies": {
+    "@types/bun": "latest",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "typescript": "^5"
+  }
 }

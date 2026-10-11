@@ -1,15 +1,18 @@
 """Python side of the WordCraft example.
 
-Two endpoints, stdlib HTTP server + python-docx:
+Four endpoints, stdlib HTTP server + python-docx:
 
   POST /api/generate   JSON  -> .docx   Build a document with a table made dynamically from the data.
-  POST /api/analyze    .docx -> JSON    Read every table (and word count) back out of a document.
+  POST /api/sample     JSON  -> JSON    Parameters -> a big sample report spec (synthetic numbers).
+  POST /api/report     JSON  -> .docx   A report spec of any size -> one document (schema: ../REPORT_JSON.md).
+  POST /api/analyze    .docx -> JSON    Table contents, plus outline / pictures / sections / footer fields.
 
 The browser edits the document in WordCraft; Python generates it and reads it back.
 """
 
 import io
 import json
+from dataclasses import fields
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 from docx import Document
@@ -17,8 +20,11 @@ from docx.enum.text import WD_ALIGN_PARAGRAPH
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 
-MAX_BODY = 20 * 1024 * 1024  # 20 MB
+from report import Params, analyze_report, make_spec, render_spec
+
+MAX_BODY = 64 * 1024 * 1024  # 64 MB: a report spec can be big
 DOCX = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+PARAM_NAMES = {f.name for f in fields(Params)}
 
 
 def is_number(v) -> bool:
@@ -93,12 +99,13 @@ def analyze_docx(data: bytes) -> dict:
     doc = Document(io.BytesIO(data))
     tables = [[[c.text for c in row.cells] for row in t.rows] for t in doc.tables]
     text = [p.text for p in doc.paragraphs]
-    return {
+    simple = {
         "paragraphs": sum(1 for t in text if t.strip()),
         "words": sum(len(t.split()) for t in text),
         "headings": [p.text for p in doc.paragraphs if p.style.name.startswith("Heading") and p.text.strip()],
         "tables": tables,
     }
+    return {**analyze_report(data), **simple}  # structure (outline, pictures, sections...) + table contents
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -120,6 +127,12 @@ class Handler(BaseHTTPRequestHandler):
         try:
             if self.path == "/api/generate":
                 return self._send(200, build_docx(json.loads(body or b"{}")), DOCX)
+            if self.path == "/api/sample":
+                raw = json.loads(body or b"{}")
+                params = Params(**{k: v for k, v in raw.items() if k in PARAM_NAMES})  # ignore unknown keys
+                return self._json(200, make_spec(params))
+            if self.path == "/api/report":
+                return self._send(200, render_spec(json.loads(body)), DOCX)
             if self.path == "/api/analyze":
                 return self._json(200, analyze_docx(body))
         except Exception as e:  # bad JSON, not a docx, wrong shape: tell the caller, keep serving
@@ -127,7 +140,7 @@ class Handler(BaseHTTPRequestHandler):
         self._json(404, {"error": "not found"})
 
     def log_message(self, fmt, *args) -> None:
-        print("[py]", fmt % args)
+        print("[py]", fmt % args, flush=True)
 
 
 if __name__ == "__main__":

@@ -1,13 +1,22 @@
 # Automation examples
 
-Examples where a program, not just a person, creates or reads documents around the embedded editor.
+Examples where a program, not just a person, creates or reads documents around the embedded editor. All three do the
+same thing and read the same JSON, in two modes:
 
-| Example | What it does |
-|---|---|
-| [`python`](python) | A Python server builds a `.docx` with a table made dynamically from JSON, the editor opens it, and Python reads the edited tables back as JSON. |
-| [`nextjs-ts`](nextjs-ts) | The same flow in TypeScript: Next.js route handlers build the `.docx` (`docx` package) and read tables back (`fflate` + `fast-xml-parser`). No separate server. |
-| [`nextjs-python`](nextjs-python) | A Next.js frontend plus the Python server. Next forwards `/api/*` to Python with `rewrites` (one origin, no CORS), and `bun run dev` starts both. |
-| [`report`](report) | A long, structured **annual report** from parameters (company, year, seed, regions, appendix length): cover, contents, numbered sections with computed commentary, charts, styled tables, lists, a landscape appendix with a repeating header row, and "Page X of Y" in the footer. Python + `python-docx` + `matplotlib`. |
+- **Table from JSON**: a list of rows becomes a styled table (columns come from the data).
+- **Report from JSON**: one JSON document, of any size, becomes a whole report with a cover, contents, headings, lists,
+  tables, charts and a landscape appendix. Schema: [`REPORT_JSON.md`](REPORT_JSON.md). A small complete example:
+  [`sample-report.json`](sample-report.json).
+
+"Analyze" reads the edited document back out of the editor and returns its outline, tables, pictures, sections, lists
+and footer fields.
+
+| Example | Frontend | Backend |
+|---|---|---|
+| [`python`](python) | Vite (vanilla TS) | Python: `python-docx` and `matplotlib` behind a stdlib HTTP server. Two terminals. |
+| [`nextjs-ts`](nextjs-ts) | Next.js | TypeScript route handlers: `docx`, `@resvg/resvg-js` for the charts, `fflate` and `fast-xml-parser` to read documents. No separate server. |
+| [`nextjs-python`](nextjs-python) | Next.js | The same Python server, behind Next `rewrites` (one origin, no CORS). `bun run dev` starts both. |
 
 Setup is the same as the other examples: build the package and run `bun link` in the repo root first (see the
-[root README](../../README.md#examples)).
+[root README](../../README.md#examples)). The Python examples also need a virtualenv in their folder (`python -m venv .venv`,
+then `pip install -r requirements.txt`).

@@ -1,0 +1,537 @@
+{
+  "title": "Alder Street Press",
+  "subtitle": "Annual Report 2025",
+  "meta": "Regions: North America, EMEA, APAC",
+  "header": "Alder Street Press  |  Annual Report 2025",
+  "pageNumbers": true,
+  "cover": true,
+  "toc": true,
+  "blocks": [
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "1. Executive summary"
+    },
+    {
+      "type": "paragraph",
+      "text": "Alder Street Press closed 2025 with revenue of $22,169k, up 19.2% on $18,602k the year before. APAC grew fastest (+24.3%), while EMEA moved at +7.6%. The strongest quarter was Q2."
+    },
+    {
+      "type": "table",
+      "columns": [
+        "Key figure",
+        "Value"
+      ],
+      "align": [
+        "left",
+        "right"
+      ],
+      "rows": [
+        [
+          "Revenue ($k)",
+          "22,169"
+        ],
+        [
+          "Year-over-year growth",
+          "+19.2%"
+        ],
+        [
+          "Blended gross margin",
+          "69.5%"
+        ],
+        [
+          "Largest region",
+          "APAC (56% of revenue)"
+        ],
+        [
+          "Customers in the ledger",
+          "12 (7 active)"
+        ]
+      ]
+    },
+    {
+      "type": "quote",
+      "text": "\u201cGrowth came from APAC, not from price: volumes carried the year.\u201d"
+    },
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "2. Revenue analysis"
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "2.1 Revenue by region and quarter"
+    },
+    {
+      "type": "paragraph",
+      "text": "All figures are in thousands of US dollars. Negative changes are shown in red."
+    },
+    {
+      "type": "table",
+      "columns": [
+        "Region",
+        "Q1",
+        "Q2",
+        "Q3",
+        "Q4",
+        "Total",
+        "YoY"
+      ],
+      "rows": [
+        [
+          "North America",
+          "1,447",
+          "1,567",
+          "1,554",
+          "1,471",
+          "6,038",
+          "+17.1%"
+        ],
+        [
+          "EMEA",
+          "912",
+          "1,005",
+          "911",
+          "959",
+          "3,787",
+          "+7.6%"
+        ],
+        [
+          "APAC",
+          "3,105",
+          "3,048",
+          "3,029",
+          "3,162",
+          "12,343",
+          "+24.3%"
+        ]
+      ],
+      "total": [
+        "Total",
+        "5,464",
+        "5,619",
+        "5,493",
+        "5,592",
+        "22,169",
+        "+19.2%"
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "2.2 Charts"
+    },
+    {
+      "type": "chart",
+      "kind": "bar",
+      "labels": [
+        "North America",
+        "EMEA",
+        "APAC"
+      ],
+      "yLabel": "$k",
+      "caption": "Figure 1. Revenue by region, 2024 vs 2025.",
+      "series": [
+        {
+          "name": "2024",
+          "color": "#C7D2FE",
+          "values": [
+            5156,
+            3520,
+            9926
+          ]
+        },
+        {
+          "name": "2025",
+          "color": "#2F6FE0",
+          "values": [
+            6038,
+            3787,
+            12343
+          ]
+        }
+      ]
+    },
+    {
+      "type": "chart",
+      "kind": "line",
+      "labels": [
+        "Q1",
+        "Q2",
+        "Q3",
+        "Q4"
+      ],
+      "yLabel": "$k",
+      "caption": "Figure 2. Total revenue by quarter. Q2 was the peak.",
+      "series": [
+        {
+          "name": "",
+          "color": "#8B5CF6",
+          "values": [
+            5464,
+            5619,
+            5493,
+            5592
+          ]
+        }
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "2.3 What moved"
+    },
+    {
+      "type": "bullets",
+      "items": [
+        "APAC: +24.3% to $12,343k.",
+        "North America: +17.1% to $6,038k.",
+        "EMEA: +7.6% to $3,787k."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "2.4 Regional commentary"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "North America"
+    },
+    {
+      "type": "paragraph",
+      "text": "North America delivered $6,038k, +17.1% year over year and 27% of group revenue. Its best quarter was Q2 ($1,567k) and its weakest Q1 ($1,447k), a spread of 8%. That is 2.1% points behind the group, so we are reviewing the plan for next year."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "EMEA"
+    },
+    {
+      "type": "paragraph",
+      "text": "EMEA delivered $3,787k, +7.6% year over year and 17% of group revenue. Its best quarter was Q2 ($1,005k) and its weakest Q3 ($911k), a spread of 9%. That is 11.6% points behind the group, so we are reviewing the plan for next year."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "APAC"
+    },
+    {
+      "type": "paragraph",
+      "text": "APAC delivered $12,343k, +24.3% year over year and 56% of group revenue. Its best quarter was Q4 ($3,162k) and its weakest Q3 ($3,029k), a spread of 4%. That is 5.2% points ahead of the group, so it is a candidate for more investment."
+    },
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "3. Product performance"
+    },
+    {
+      "type": "table",
+      "columns": [
+        "Product",
+        "2024 ($k)",
+        "2025 ($k)",
+        "Change",
+        "Gross margin"
+      ],
+      "rows": [
+        [
+          "Studio",
+          "3,176",
+          "3,195",
+          "+0.6%",
+          "71%"
+        ],
+        [
+          "Cloud Sync",
+          "1,783",
+          "2,078",
+          "+16.6%",
+          "75%"
+        ],
+        [
+          "Review Suite",
+          "3,424",
+          "3,834",
+          "+12.0%",
+          "64%"
+        ],
+        [
+          "Mobile",
+          "4,135",
+          "4,106",
+          "-0.7%",
+          "79%"
+        ],
+        [
+          "API",
+          "4,645",
+          "5,200",
+          "+11.9%",
+          "62%"
+        ]
+      ],
+      "total": [
+        "All products",
+        "17,163",
+        "18,414",
+        "+7.3%",
+        "69%"
+      ]
+    },
+    {
+      "type": "paragraph",
+      "text": "Cloud Sync was the standout (+16.6%). Mobile needs attention (-0.7%)."
+    },
+    {
+      "type": "heading",
+      "level": 2,
+      "text": "3.1 Product notes"
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Studio"
+    },
+    {
+      "type": "paragraph",
+      "text": "Studio earned $3,195k (+0.6%) at a 71% gross margin, contributing 17% of product revenue. Margin is above the blended average, so growth here is welcome."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Cloud Sync"
+    },
+    {
+      "type": "paragraph",
+      "text": "Cloud Sync earned $2,078k (+16.6%) at a 75% gross margin, contributing 11% of product revenue. Margin is above the blended average, so growth here is welcome."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Review Suite"
+    },
+    {
+      "type": "paragraph",
+      "text": "Review Suite earned $3,834k (+12.0%) at a 64% gross margin, contributing 21% of product revenue. Margin is below the blended average, so growth here dilutes profit."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "Mobile"
+    },
+    {
+      "type": "paragraph",
+      "text": "Mobile earned $4,106k (-0.7%) at a 79% gross margin, contributing 22% of product revenue. Revenue fell, and it is a high-margin line, so the loss hurts profit."
+    },
+    {
+      "type": "heading",
+      "level": 3,
+      "text": "API"
+    },
+    {
+      "type": "paragraph",
+      "text": "API earned $5,200k (+11.9%) at a 62% gross margin, contributing 28% of product revenue. Margin is below the blended average, so growth here dilutes profit."
+    },
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "4. Risks and mitigations"
+    },
+    {
+      "type": "paragraph",
+      "text": "The main risks, in the order we would address them:"
+    },
+    {
+      "type": "numbered",
+      "items": [
+        "Concentration. APAC is 56% of revenue; a slowdown there moves the whole result.",
+        "Weak region. EMEA grew +7.6%; review pricing and partners.",
+        "Product drag. Mobile shrank relative to the others; decide whether to invest or sunset.",
+        "Churn. Churned accounts in the ledger show where renewals are slipping.",
+        "Seasonality. Results lean on one quarter; smooth the pipeline to avoid a weak start to next year."
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "5. Outlook"
+    },
+    {
+      "type": "paragraph",
+      "text": "We plan for $25,994k in 2026 (+17.3%), led by APAC. Gross margin is expected to hold near 69%."
+    },
+    {
+      "type": "paragraph",
+      "italic": true,
+      "text": "Note: all numbers in this document are synthetic, generated from a seed for demonstration."
+    },
+    {
+      "type": "section",
+      "orientation": "landscape"
+    },
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Appendix A. Customer ledger"
+    },
+    {
+      "type": "paragraph",
+      "text": "12 accounts. The header row repeats on every page."
+    },
+    {
+      "type": "table",
+      "columns": [
+        "ID",
+        "Customer",
+        "Region",
+        "Plan",
+        "Seats",
+        "MRR ($)",
+        "Status"
+      ],
+      "align": [
+        "left",
+        "left",
+        "left",
+        "left",
+        "right",
+        "right",
+        "left"
+      ],
+      "highlight": {
+        "Churned": "#C0392B"
+      },
+      "rows": [
+        [
+          "C-1000",
+          "Juniper Group",
+          "APAC",
+          "Enterprise",
+          899,
+          4867.75,
+          "Trial"
+        ],
+        [
+          "C-1001",
+          "Ember Holdings",
+          "North America",
+          "Starter",
+          527,
+          5906.09,
+          "Active"
+        ],
+        [
+          "C-1002",
+          "Cedar Media",
+          "EMEA",
+          "Starter",
+          687,
+          1169.7,
+          "Churned"
+        ],
+        [
+          "C-1003",
+          "Juniper Systems",
+          "EMEA",
+          "Business",
+          611,
+          6998.75,
+          "Trial"
+        ],
+        [
+          "C-1004",
+          "Birch Labs",
+          "EMEA",
+          "Enterprise",
+          716,
+          9328.36,
+          "Active"
+        ],
+        [
+          "C-1005",
+          "Lumen Group",
+          "APAC",
+          "Enterprise",
+          294,
+          10058.29,
+          "Active"
+        ],
+        [
+          "C-1006",
+          "Alder Media",
+          "EMEA",
+          "Team",
+          628,
+          1718.8,
+          "Active"
+        ],
+        [
+          "C-1007",
+          "Delta Group",
+          "North America",
+          "Team",
+          410,
+          5528.11,
+          "Trial"
+        ],
+        [
+          "C-1008",
+          "Birch Works",
+          "EMEA",
+          "Enterprise",
+          565,
+          3954.74,
+          "Active"
+        ],
+        [
+          "C-1009",
+          "Granite Partners",
+          "EMEA",
+          "Enterprise",
+          370,
+          9586.68,
+          "Trial"
+        ],
+        [
+          "C-1010",
+          "Delta Works",
+          "North America",
+          "Team",
+          157,
+          3316.52,
+          "Active"
+        ],
+        [
+          "C-1011",
+          "Alder Media",
+          "APAC",
+          "Team",
+          272,
+          4011.66,
+          "Active"
+        ]
+      ],
+      "total": [
+        "",
+        "Total",
+        "",
+        "",
+        6136,
+        66445.45,
+        ""
+      ]
+    },
+    {
+      "type": "heading",
+      "level": 1,
+      "text": "Appendix B. Methodology"
+    },
+    {
+      "type": "paragraph",
+      "text": "Revenue is recognised monthly and reported by quarter. Growth compares like-for-like quarters. Gross margin is revenue-weighted across products. Figures are rounded to the nearest thousand."
+    }
+  ]
+}
