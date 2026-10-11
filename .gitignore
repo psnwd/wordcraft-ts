@@ -8,3 +8,4 @@ next-env.d.ts
 dist
 .astro
 __pycache__
+.venv
