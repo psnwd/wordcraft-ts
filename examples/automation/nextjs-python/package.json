@@ -1,0 +1,17 @@
+{
+  "name": "wordcraft-automation-nextjs-python-example",
+  "private": true,
+  "scripts": {
+    "dev": "bun scripts/dev.ts",
+    "dev:web": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "next": "^15.5.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "wordcraft-ts": "link:wordcraft-ts"
+  },
+  "devDependencies": { "@types/bun": "latest", "@types/node": "^22", "@types/react": "^19", "typescript": "^5" }
+}
